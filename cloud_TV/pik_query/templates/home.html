@@ -1,0 +1,160 @@
+{% extends 'master.html' %}
+
+{% block head %}
+<style>
+  html {
+      height: 100%;
+  }
+
+  body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+  }
+
+  .content-wrapper {
+      flex: 1;
+  }
+
+  .card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      transition: transform 0.3s;
+  }
+
+  .card-content {
+      flex: 1;
+  }
+
+  .card:hover {
+      transform: scale(1.03); /* Scale the card by 5% on hover */
+  }
+
+  .spacer-with-line {
+      height: 2px;
+      background-color: #ccc;
+      margin: 3rem 0;
+      width: 100%
+  }
+</style>
+{% endblock %}
+{% block content %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var checkbox = document.getElementById('color');
+    var field = document.getElementById('dynamic-field');
+
+    checkbox.addEventListener('change', function() {
+        if (checkbox.checked) {
+            var selectHTML = `
+                <div class="field is-horizontal">
+                    <div class="select is-rounded is-small">
+                        <select id="select">
+                            <option value="32">32</option>
+                            <option value="64">64</option>
+                            <option value="128">128</option>
+                            <option value="256">256</option>
+                        </select>
+                    </div>
+                </div>`;
+            field.innerHTML = selectHTML;
+        } else {
+            field.innerHTML = '';
+        }
+    });
+});
+</script>
+<div class="content-wrapper">
+  <div class="container is-centered">
+    <div class="box">
+      <form method="post" id="img-form" action="/send/">
+        <div class="field">
+          <label class="label is-medium">Image</label>
+          <div class="columns">
+            <div class="column is-half">
+              <input class="input" type="file" placeholder="Drop image here">
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label is-medium">Top</label>
+          <label class="label is-medium">Image</label>
+          <div class="columns">
+            <div class="column is-half">
+              <input class="input" type="number" placeholder="Number of image to find">
+            </div>
+          </div>
+        </div>
+
+        <label class="label is-medium">Descriptor</label>
+        <div class="field is-grouped">
+          <div class="field">
+            <label class="checkbox">
+              <input type="checkbox" id="color">
+              Color histogram
+            </label>
+          </div>
+          <div id="dynamic-field"></div>
+        </div>
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox">
+            Color histogram with bins
+          </label>
+        </div>
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox">
+            HSV Color Histogram
+          </label>
+        </div>
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox">
+            ORB
+          </label>
+        </div>
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox">
+            SIFT
+          </label>
+        </div>
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox">
+            VGG16
+          </label>
+        </div>
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox">
+            VGG16 (Layer: -2)
+          </label>
+        </div>
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox">
+            VGG19
+          </label>
+        </div>
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox">
+            ResNet50
+          </label>
+        </div>
+        <div class="field">
+          <div class="control">
+            <button class="button is-link">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock %}

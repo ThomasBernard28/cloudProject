@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <title>Piks Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+      >
+    <style>
+        :root {
+            --danger: #d60044;
+        }
+
+        .is-danger {
+            background-color: var(--danger);
+            color: white; /* Add this line to ensure proper text color */
+        }
+
+        #friendForm {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .field {
+            flex: 0 0 auto;
+        }
+
+        .has-border-success {
+            border-color: #48c774 !important;
+        }
+
+        .has-text-success {
+            color: #48c774 !important;
+        }
+
+        .has-border-failure {
+            border-color: #c42f2f !important;
+        }
+
+        .has-text-failure {
+            color: #c42f2f !important;
+        }
+
+        .horizontal-line {
+            height: 2px;
+            background-color: #ccc;
+            margin: 1rem 0;
+            width: 100%
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.1"></script>
+
+
+    {% block head %}
+    {% endblock %}
+
+</head>
+<body>
+
+<nav class="navbar mx-4 my-4" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a href="/" class="has-text-black title" style="margin-left:1rem; margin-top: 1rem"><strong>Piks finder</strong>
+        </a>
+        <a role="button" class="navbar-burger" style="margin-top: 0.8rem" aria-label="menu" aria-expanded="false"
+           data-target="navbar">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    <div class="navbar-menu" id="navbar">
+        <div class="navbar-start">
+        </div>
+        <div class="navbar-end">
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+        // Add a click event on each of them
+        $navbarBurgers.forEach(el => {
+            el.addEventListener('click', () => {
+
+                // Get the target from the "data-target" attribute
+                const target = el.dataset.target;
+                const $target = document.getElementById(target);
+
+                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                el.classList.toggle('is-active');
+                $target.classList.toggle('is-active');
+
+            });
+        });
+
+    });
+</script>
+
+{% block content %}
+{% endblock %}
+
+<footer class="footer">
+    <div class="content">
+        <div class="columns">
+            <div class="column has-text-centered">
+                <p class="subtitle"><strong>Auteurs:</strong></p>
+                <p><a href="https://www.linkedin.com/in/thomasbernard28/">Thomas Bernard</a></p>
+                <p><a href="https://www.linkedin.com/in/virgil-surin/">Virgil Surin</a></p>
+            </div>
+            <div class="column has-text-centered">
+                <p class="subtitle"><strong>Made with</strong></p>
+                <p>Django</p>
+                <p>Bulma</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
