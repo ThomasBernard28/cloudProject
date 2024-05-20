@@ -4,6 +4,7 @@ import operator
 import math
 import os
 import sys
+import csv
 
 from django.shortcuts import redirect, render
 from django.conf import settings
@@ -34,6 +35,7 @@ def recherche(image_req,top, features1):
     for k in range(top):
         nom_images_proches.append(voisins[k][0])
         #print("done")
+    print(features1[image_req][0])
     plt.figure(figsize=(5, 5))
     plt.imshow(imread(features1[image_req][0]), cmap='gray', interpolation='none')
     plt.title("Image requête")
@@ -50,6 +52,48 @@ def recherche(image_req,top, features1):
         plt.title(title)
     return nom_image_requete, nom_images_proches, nom_images_non_proches
 
+def compute_RP(RP_file, top, nom_image_requete, nom_images_non_proches):
+    rappel_precision=[]
+    rp=[]
+    position1=int(nom_image_requete)//100
+    for j in range(top):
+        position2=int(nom_images_non_proches[j])//100
+        if position1==position2:
+            rappel_precision.append("pertinent")
+        else:
+            rappel_precision.append("non pertinent")
+
+    for i in range(top):
+        j=i
+        val=0
+        while j>=0:
+            if rappel_precision[j]=="pertinent":
+                val+=1
+            j-=1
+        rp.append(str((val/(i+1))*100)+ " " + str((val/top)*100))
+
+    with open(RP_file, 'w') as f:
+        for a in rp:
+            f.write(str(a) + '\n')
+
+
+def display_RP(fichier):
+    x = []
+    y = []
+    with open(fichier) as csvfile:
+        plots = csv.reader(csvfile, delimiter=' ')
+        for row in plots:
+            x.append(float(row[0]))
+            y.append(float(row[1]))
+            fig = plt.figure()
+
+    plt.plot(y, x,'C1', label='VGG16')
+    plt.xlabel('Rappel')
+    plt.ylabel('Précision')
+    plt.title('Courbe Rappel-Précision')
+    plt.legend()
+    plt.savefig('RP.png')
+
 def home_view(request):
     return render(request, "home.html")
 
@@ -59,7 +103,6 @@ def submit(request):
         top = int(request.POST.get("top"))
 
         # perform the search
-        files = "../image_orig"
         big_folder = "Features_train/"
 
         if not os.path.exists(big_folder):
@@ -76,19 +119,16 @@ def submit(request):
             for i in range(1000):
                 path = os.path.join(settings.BASE_DIR, f"{folder_model1}{str(i)}.txt")
                 with open(path, 'r') as f:
-                    name = f"{files}/{i}.jpg"
+                    name = os.path.join(settings.BASE_DIR, f"media/image_orig/{i}.jpg")
                     data = [float(line) for line in f.read().strip().split('\n')]
                     features1.append((name, data))
 
         except Exception as e:
             print(f"Error reading file: {e}")
 
-        nom_image_requete, nom_images_proches, nom_images_non_proches = recherche(img, top, features1)
-        print("Image requête : ",nom_image_requete)
-        print("Images proches : ",nom_images_proches)
-        print("Images non proches : ",nom_images_non_proches)
-        print("done")
-
+        nom_image_requete, nom_images_non_proches, nom_images_proches = recherche(img, top, features1)
+        # compute_RP("VGG_RP.txt",20,nom_image_requete,nom_images_non_proches)
+        # display_RP("VGG_RP.txt")
         context = {
             "nom_img_request" : nom_image_requete,
             "nom_img_proches" : nom_images_proches,

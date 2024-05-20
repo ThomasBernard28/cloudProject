@@ -43,15 +43,14 @@
 <div class="content-wrapper">
   <div class="container is-centered">
     <div class="box">
-      {{ nom_img_request }}
+      <img src="/media/image_orig/{{ nom_img_request }}.jpg"/>
     </div>
     <div class="box">
-      {{ nom_img_proches }}
+      PROCHES
+      {% for i in nom_img_proches %}
+      <img src="/media/image_orig/{{ i }}.jpg"/>
+      {% endfor %}
     </div>
-    <div class="box">
-      {{ nom_img_non_proches }}
-    </div>
-
   </div>
 </div>
 
