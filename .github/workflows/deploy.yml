@@ -31,7 +31,7 @@ jobs:
     - name: SSH and deploy
       run: |
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-        cd /home/${{ secrets.SSH_USERNAME }}/cloudProject
+        cd /home/${{ secrets.SSH_USERNAME }}/
         docker stop piksapp || true
         docker rm piksapp || true
         docker build -t piksapp .
