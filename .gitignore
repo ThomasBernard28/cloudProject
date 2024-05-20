@@ -380,3 +380,4 @@ pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm+all,venv,python,git,django
 /Projet_AA_Cloud_2024.pdf
+*.nix
