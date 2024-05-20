@@ -49,12 +49,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (checkbox.checked) {
             var selectHTML = `
                 <div class="field is-horizontal">
-                    <div class="select is-rounded is-small">
+                    <div class="select is-small">
                         <select id="select">
-                            <option value="32">32</option>
-                            <option value="64">64</option>
-                            <option value="128">128</option>
-                            <option value="256">256</option>
+                            <option value="Euclidian">Euclidian</option>
+                            <option value="Bhattcharyya">Bhattcharyya</option>
                         </select>
                     </div>
                 </div>`;
@@ -73,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <label class="label is-medium">Image</label>
           <div class="columns">
             <div class="column is-half">
-              <input class="input" type="file" placeholder="Drop image here">
+              <input class="input" type="text" placeholder="Pic an image">
             </div>
           </div>
         </div>
