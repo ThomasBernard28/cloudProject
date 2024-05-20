@@ -1,4 +1,4 @@
-name: Deploy Django App
+name: Deploy Django app
 
 on:
   push:
@@ -13,13 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: setup SSH
+    - name: Set up SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Install SSH pass
-      run: sudo apt-get install -y sshpass    
+      run: sudo apt-get install -y sshpass
 
     - name: Copy files to VPS
       run: sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz --exclude '.git' ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/cloudProject/
