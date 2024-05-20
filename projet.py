@@ -1,24 +1,9 @@
-from tensorflow.keras.utils import load_img
-from tensorflow.keras.utils import img_to_array
-from keras.applications.vgg16 import preprocess_input
-from keras.applications.vgg16 import decode_predictions
-from keras.applications import vgg16
-from keras.applications import vgg19
-from tensorflow.keras.applications import resnet50
-from keras.applications import inception_v3
-from keras.applications import mobilenet
-from keras.applications import xception
 from matplotlib.pyplot import imread
 import matplotlib.pyplot as plt
-import numpy as np
 import operator
 import math
-from keras.models import Model
 import os
 import sys
-import ast
-import tensorflow as tf
-import PIL
 import csv
 import warnings
 
@@ -66,6 +51,48 @@ def recherche(image_req,top, features1):
       plt.title(title)
   return nom_image_requete, nom_images_proches, nom_images_non_proches
 
+def compute_RP(RP_file, top, nom_image_requete, nom_images_non_proches):
+    rappel_precision=[]
+    rp=[]
+    position1=int(nom_image_requete)//100
+    for j in range(top):
+        position2=int(nom_images_non_proches[j])//100
+        if position1==position2:
+            rappel_precision.append("pertinent")
+        else:
+            rappel_precision.append("non pertinent")
+
+    for i in range(top):
+        j=i
+        val=0
+        while j>=0:
+            if rappel_precision[j]=="pertinent":
+                val+=1
+            j-=1
+        rp.append(str((val/(i+1))*100)+ " " + str((val/top)*100))
+
+    with open(RP_file, 'w') as f:
+        for a in rp:
+            f.write(str(a) + '\n')
+
+
+def display_RP(fichier):
+    x = []
+    y = []
+    with open(fichier) as csvfile:
+        plots = csv.reader(csvfile, delimiter=' ')
+        for row in plots:
+            x.append(float(row[0]))
+            y.append(float(row[1]))
+            fig = plt.figure()
+
+    plt.plot(y, x,'C1', label='VGG16')
+    plt.xlabel('Rappel')
+    plt.ylabel('Précision')
+    plt.title('Courbe Rappel-Précision')
+    plt.legend()
+    plt.savefig('RP.png')
+
 
 if __name__ == "__main__":
     warnings.filterwarnings('ignore')
@@ -90,6 +117,8 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         nom_image_requete, nom_images_proches, nom_images_non_proches = recherche(int(sys.argv[1]), 20, features1)
+        compute_RP("VGG_RP.txt",20,nom_image_requete,nom_images_non_proches)
+        display_RP("VGG_RP.txt")
 
     print("Image requête : ",nom_image_requete)
     print("Images proches : ",nom_images_proches)
