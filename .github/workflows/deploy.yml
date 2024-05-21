@@ -34,6 +34,7 @@ jobs:
         cd /home/${{ secrets.SSH_USERNAME }}/
         docker stop piksapp || true
         docker rm piksapp || true
+        docker rmi piksapp || true
         docker build -t piksapp .
         docker run -d -p 8000:8000 --name piksapp piksapp
         EOF
