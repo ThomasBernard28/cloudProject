@@ -59,7 +59,6 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'Features_train'),
-            os.path.join(BASE_DIR, 'image.orig'),
                  ],
         'APP_DIRS': True,
         'OPTIONS': {
