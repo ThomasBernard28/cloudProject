@@ -42,22 +42,22 @@
 {% block content %}
 <div class="content-wrapper">
   <div class="container is-centered">
-    <div class="box">
-      <img src="/media/image_orig/0.jpg"/>
-      <form method="post" id="img-form" action="/home/search">
-        {% csrf_token %}
-        <div class="field">
-          <label class="label is-medium">Image</label>
-          <div class="columns">
-            <div class="column is-half">
-              <input class="input" name="img" type="text" placeholder="Pic an image">
+    <div class="columns">
+      <div class="column is-half">
+        <div class="box">
+          <form method="post" id="img-form" action="/home/search">
+            {% csrf_token %}
+            <div class="field">
+              <label class="label is-medium">Image</label>
+              <input class="input" name="img" list="img-list" placeholder="Pick an image" id="image-input">
+              <datalist id="img-list">
+                {% for img in imgs %}
+                <option value="{{ img }}">
+                  {% endfor %}
+              </datalist>
             </div>
-          </div>
-        </div>
-        <div class="field">
-          <label class="label is-medium">Top</label>
-          <div class="columns">
-            <div class="column is-half">
+            <div class="field">
+              <label class="label is-medium">Top</label>
               <div class="select">
                 <select name="top">
                   <option>20</option>
@@ -65,73 +65,35 @@
                 </select>
               </div>
             </div>
-          </div>
+            <div class="field">
+              <div class="control">
+                <button class="button is-link">Submit</button>
+              </div>
+            </div>
+          </form>
         </div>
-
-        <!-- <label class="label is-medium">Descriptor</label> -->
-        <!-- <div class="field is-grouped"> -->
-        <!--   <div class="field"> -->
-        <!--     <label class="checkbox"> -->
-        <!--       <input type="checkbox" id="color"> -->
-        <!--       Color histogram -->
-        <!--     </label> -->
-        <!--   </div> -->
-        <!--   <div id="dynamic-field"></div> -->
-        <!-- </div> -->
-        <!-- <div class="field"> -->
-        <!--   <label class="checkbox"> -->
-        <!--     <input type="checkbox"> -->
-        <!--     Color histogram with bins -->
-        <!--   </label> -->
-        <!-- </div> -->
-        <!-- <div class="field"> -->
-        <!--   <label class="checkbox"> -->
-        <!--     <input type="checkbox"> -->
-        <!--     HSV Color Histogram -->
-        <!--   </label> -->
-        <!-- </div> -->
-        <!-- <div class="field"> -->
-        <!--   <label class="checkbox"> -->
-        <!--     <input type="checkbox"> -->
-        <!--     ORB -->
-        <!--   </label> -->
-        <!-- </div> -->
-        <!-- <div class="field"> -->
-        <!--   <label class="checkbox"> -->
-        <!--     <input type="checkbox"> -->
-        <!--     SIFT -->
-        <!--   </label> -->
-        <!-- </div> -->
-        <!-- <div class="field"> -->
-        <!--   <label class="checkbox"> -->
-        <!--     <input type="checkbox"> -->
-        <!--     VGG16 -->
-        <!--   </label> -->
-        <!-- </div> -->
-        <!-- <div class="field"> -->
-        <!--   <label class="checkbox"> -->
-        <!--     <input type="checkbox"> -->
-        <!--     VGG16 (Layer: -2) -->
-        <!--   </label> -->
-        <!-- </div> -->
-        <!-- <div class="field"> -->
-        <!--   <label class="checkbox"> -->
-        <!--     <input type="checkbox"> -->
-        <!--     VGG19 -->
-        <!--   </label> -->
-        <!-- </div> -->
-        <!-- <div class="field"> -->
-        <!--   <label class="checkbox"> -->
-        <!--     <input type="checkbox"> -->
-        <!--     ResNet50 -->
-        <!--   </label> -->
-        <!-- </div> -->
-        <div class="field">
-          <div class="control">
-            <button class="button is-link">Submit</button>
-          </div>
+      </div>
+      <div class="column">
+        <div class="image-display">
+          <img id="image-preview" src="" alt="Selected Image" style="max-width: 100%; max-height: 300px; display: none;">
         </div>
-      </form>
+      </div>
+      <script>
+        document.getElementById('image-input').addEventListener('input', function() {
+            var imageName = this.value;
+            var imagePreview = document.getElementById('image-preview');
+            var regex = /^\d+\.jpg$/;
+            if (regex.test(imageName)) {
+                var imagePath = '/media/image_orig/' + imageName;
+                console.log(imagePath);
+                imagePreview.src = imagePath;
+                imagePreview.style.display = 'block';
+            } else {
+                console.log("JESSIE");
+                imagePreview.style.display = 'none';
+            }
+        });
+      </script>
     </div>
 
   </div>
