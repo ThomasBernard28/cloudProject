@@ -20,7 +20,7 @@ jobs:
 
     - name: SSH and deploy
       run: |
-        ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p${{ secrets.SSH_PASSWORD }}
+        ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}
         cd /home/${{ secrets.SSH_USERNAME }}/cloudProject/
         git pull
         cd /home/${{ secrets.SSH_USERNAME }}/
