@@ -101,7 +101,7 @@ def display_RP(fichier, res_path):
     plt.savefig(res_path)
 
 def home_view(request):
-    image_files = [f"{i}.jpg" for i in range(1001)]  # Adjust range if needed
+    image_files = [f"{i}" for i in range(1000)]  # Adjust range if needed
     context = {
         "imgs" : image_files,
     }
@@ -109,7 +109,7 @@ def home_view(request):
 
 def submit(request):
     if request.method == 'POST':
-        img = int(request.POST.get("img")[:-4])
+        img = int(request.POST.get("img"))
         top = int(request.POST.get("top"))
 
         # perform the search

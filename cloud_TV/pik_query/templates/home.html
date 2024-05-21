@@ -45,16 +45,28 @@
     <div class="columns">
       <div class="column is-half">
         <div class="box">
-          <form method="post" id="img-form" action="/home/search">
+          <form method="post" id="img-form" action="/home/search" onsubmit="return validateForm()">
             {% csrf_token %}
-            <div class="field">
-              <label class="label is-medium">Image</label>
-              <input class="input" name="img" list="img-list" placeholder="Pick an image" id="image-input">
-              <datalist id="img-list">
-                {% for img in imgs %}
-                <option value="{{ img }}">
+            <label class="label is-medium">Image</label>
+            <div class="field has-addons">
+              <p class="control">
+                <button class="button is-light is-danger" id="clear", type="button">
+                  X
+                </button>
+              </p>
+              <p class="control">
+                <input class="input" name="img" list="img-list" placeholder="Pick an image" id="image-input" autocomplete="off">
+                <datalist id="img-list">
+                  {% for img in imgs %}
+                  <option value="{{ img }}"></option>
                   {% endfor %}
-              </datalist>
+                </datalist>
+              </p>
+              <p class="control">
+                <a class="button is-static">
+                  .jpg
+                </a>
+              </p>
             </div>
             <div class="field">
               <label class="label is-medium">Top</label>
@@ -67,7 +79,7 @@
             </div>
             <div class="field">
               <div class="control">
-                <button class="button is-link">Submit</button>
+                <button class="button is-link" onclick="">Submit</button>
               </div>
             </div>
           </form>
@@ -79,20 +91,37 @@
         </div>
       </div>
       <script>
+        document.getElementById('clear').addEventListener('click', function() {
+            document.getElementById('image-input').value = '';
+            var imagePreview = document.getElementById('image-preview');
+            imagePreview.style.display = 'none';
+
+        });
         document.getElementById('image-input').addEventListener('input', function() {
             var imageName = this.value;
             var imagePreview = document.getElementById('image-preview');
             var regex = /^\d+\.jpg$/;
-            if (regex.test(imageName)) {
-                var imagePath = '/media/image_orig/' + imageName;
-                console.log(imagePath);
+            var imageNumber = Number(imageName);
+            if (regex.test(imageName + ".jpg") && imageNumber >= 0 && imageNumber <= 999) {
+                var imagePath = '/media/image_orig/' + imageName + ".jpg";
                 imagePreview.src = imagePath;
                 imagePreview.style.display = 'block';
             } else {
-                console.log("JESSIE");
                 imagePreview.style.display = 'none';
             }
         });
+
+        function validateForm() {
+            var imageInput = document.getElementById('image-input').value;
+            var imageNumber = Number(imageInput);
+            if (!isNaN(imageNumber) && imageNumber >= 0 && imageNumber <= 999) {
+                return true; // Allow form submission
+            } else {
+                alert('Please enter a valid image name in the format ID where ID is a number between 0 and 999.');
+                return false; // Prevent form submission
+            }
+        }
+
       </script>
     </div>
 
