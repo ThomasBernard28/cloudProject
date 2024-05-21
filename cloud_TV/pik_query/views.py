@@ -5,6 +5,7 @@ import math
 import os
 import sys
 import csv
+import re
 
 from django.shortcuts import redirect, render
 from django.conf import settings
@@ -57,11 +58,16 @@ def compute_RP(RP_file, top, nom_image_requete, nom_images_non_proches):
     rp=[]
     position1=int(nom_image_requete)//100
     for j in range(top):
-        position2=int(nom_images_non_proches[j])//100
-        if position1==position2:
-            rappel_precision.append("pertinent")
+        pattern = r'(\d+)\.jpg'
+        match_ = re.search(pattern, nom_images_non_proches[j])
+        if match_:
+            position2=int(match_.group(1))//100
+            if position1==position2:
+                rappel_precision.append("pertinent")
+            else:
+                rappel_precision.append("non pertinent")
         else:
-            rappel_precision.append("non pertinent")
+            print(f"Cannot find digits in {nom_images_non_proches[j]}")
 
     for i in range(top):
         j=i
@@ -77,7 +83,7 @@ def compute_RP(RP_file, top, nom_image_requete, nom_images_non_proches):
             f.write(str(a) + '\n')
 
 
-def display_RP(fichier):
+def display_RP(fichier, res_path):
     x = []
     y = []
     with open(fichier) as csvfile:
@@ -92,10 +98,14 @@ def display_RP(fichier):
     plt.ylabel('Précision')
     plt.title('Courbe Rappel-Précision')
     plt.legend()
-    plt.savefig('RP.png')
+    plt.savefig(res_path)
 
 def home_view(request):
-    return render(request, "home.html")
+    image_files = [f"{i}.jpg" for i in range(1001)]  # Adjust range if needed
+    context = {
+        "imgs" : image_files,
+    }
+    return render(request, "home.html", context)
 
 def submit(request):
     if request.method == 'POST':
@@ -127,12 +137,19 @@ def submit(request):
             print(f"Error reading file: {e}")
 
         nom_image_requete, nom_images_non_proches, nom_images_proches = recherche(img, top, features1)
-        # compute_RP("VGG_RP.txt",20,nom_image_requete,nom_images_non_proches)
-        # display_RP("VGG_RP.txt")
+        file_path = os.path.join(settings.MEDIA_ROOT, 'temp_files/')
+        filename =  'VGG_RP.txt'
+        graph_name = 'RP.png'
+        file_ = file_path + filename
+        graph_file = file_path + graph_name
+        compute_RP(file_, top, nom_image_requete, nom_images_non_proches)
+        display_RP(file_, graph_file)
+
         context = {
-            "nom_img_request" : nom_image_requete,
-            "nom_img_proches" : nom_images_proches,
+            "nom_img_request"     : nom_image_requete,
+            "nom_img_proches"     : nom_images_proches,
             "nom_img_non_proches" : nom_images_non_proches,
+            "rp_img"              : graph_file,
         }
 
         return render(request, "result.html", context)
