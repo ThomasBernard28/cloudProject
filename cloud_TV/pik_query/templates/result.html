@@ -37,19 +37,51 @@
       margin: 3rem 0;
       width: 100%
   }
+  .separator {
+      width: 5px; 
+      background-color: #333; 
+      height: auto; 
+      margin: 0 15px; 
+      display: inline-block; 
+      border-radius : 10px;
+  }
+  .box.with-outline {
+      outline: 2px solid #ccc; /* Adjust the color and thickness of the outline */
+      outline-offset: 0px; /* Adjust the offset if needed */
+      border-radius: 10px; /* Optional: add rounded corners */
+  }
+  .has-underline {
+      text-decoration: underline; /* Adds an underline to the text */
+  }
 </style>
 {% endblock %}
 {% block content %}
 <div class="content-wrapper">
   <div class="container is-centered">
-    <div class="box">
-      <img src="/media/image_orig/{{ nom_img_request }}.jpg"/>
+    <div class="box with-outline">
+      <div class="columns">
+        <div class="column is-half">
+          <h1 class="title has-underline">Image originale</h1>
+          <img src="/media/image_orig/{{ nom_img_request }}.jpg"/>
+        </div>
+        <div class="separator"></div>
+        <div class="column">
+          <h1 class="title has-underline">Courbes de résultats</h1>
+          <img src="/media/temp_files/RP.png"/>
+        </div>
+      </div>
     </div>
-    <div class="box">
-      PROCHES
+    <div class="box with-outline">
+      <h1 class="title has-underline">Images proches</h1>
+      <div class="grid">
       {% for i in nom_img_proches %}
-      <img src="/media/image_orig/{{ i }}.jpg"/>
+        <div class="cell">
+          <div class="box">
+            <img src="/media/image_orig/{{ i }}.jpg"/>
+          </div>
+        </div>
       {% endfor %}
+      </div>
     </div>
   </div>
 </div>
