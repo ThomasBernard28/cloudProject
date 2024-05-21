@@ -13,18 +13,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up SSH key
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        eval $(ssh-agent)
+        ssh-add ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Install SSH pass
+      run: sudo apt-get install -y sshpass
 
     - name: SSH and deploy
       run: |
-        ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}
+        sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
         cd /home/${{ secrets.SSH_USERNAME }}/cloudProject/
         git pull
         cd /home/${{ secrets.SSH_USERNAME }}/
         docker stop piksapp || true
         docker rm piksapp || true
+        docker rmi piksapp || true
         docker build -t piksapp .
         docker run -d -p 8000:8000 --name piksapp piksapp
+        EOF
