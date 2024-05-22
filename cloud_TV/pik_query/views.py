@@ -7,6 +7,7 @@ import sys
 import csv
 import re
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.conf import settings
 
@@ -100,6 +101,7 @@ def display_RP(fichier, res_path):
     plt.legend()
     plt.savefig(res_path)
 
+@login_required
 def home_view(request):
     image_files = [f"{i}" for i in range(1000)]  # Adjust range if needed
     context = {
@@ -107,6 +109,7 @@ def home_view(request):
     }
     return render(request, "home.html", context)
 
+@login_required
 def submit(request):
     if request.method == 'POST':
         img = int(request.POST.get("img"))
@@ -155,3 +158,7 @@ def submit(request):
         return render(request, "result.html", context)
     else:
         return render(request, "home.html")
+
+@login_required
+def restricted_view(request):
+    return render(request, 'restricted.html')
