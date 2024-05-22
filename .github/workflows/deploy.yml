@@ -25,15 +25,15 @@ jobs:
     - name: Install SSH pass
       run: sudo apt-get install -y sshpass
 
-    - name: Copy files to VPS
-      run: sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz --exclude '.git' ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/cloudProject/
-
     - name: SSH and deploy
       run: |
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+        cd /home/${{ secrets.SSH_USERNAME }}/cloudProject/
+        git pull
         cd /home/${{ secrets.SSH_USERNAME }}/
         docker stop piksapp || true
         docker rm piksapp || true
+        docker rmi piksapp || true
         docker build -t piksapp .
         docker run -d -p 8000:8000 --name piksapp piksapp
         EOF
