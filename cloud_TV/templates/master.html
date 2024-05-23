@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>Piks Finder</title>
+    <link rel="icon" href="{% media 'media/favicon.ico' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link
       rel="stylesheet"
@@ -49,10 +50,25 @@
             margin: 1rem 0;
             width: 100%
         }
+
+        .footer {
+            padding: 1rem 1.5rem;
+        }
+
+        .footer .content {
+            padding: 1rem 0;
+        }
+
+        .footer .columns {
+            margin: 0;
+        }
+
+        .footer .column {
+            padding: 0.5rem;
+        }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.1"></script>
-
 
     {% block head %}
     {% endblock %}

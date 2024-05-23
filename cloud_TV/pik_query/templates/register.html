@@ -1,0 +1,83 @@
+{% extends 'master.html' %}
+
+{% block head %}
+<style>
+  .register-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding-top: 50px;
+  }
+
+  .register-box {
+      padding: 2rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+  }
+
+  .notification.is-danger {
+      margin-top: 1rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <div class="container is-centered">
+    <div class="register-container">
+      <div class="register-box">
+        <h1 class="title has-text-centered">Create Account</h1>
+        <form method="post" action="{% url 'register' %}">
+          {% csrf_token %}
+          <div class="field">
+            <label class="label">Username</label>
+            <div class="control has-icons-left">
+              <input class="input" type="text" name="username" placeholder="Enter your username" required>
+              <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+              </span>
+              {% if form.username.errors %}
+              <p class="help is-danger">{{ form.username.errors }}</p>
+              {% endif %}
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control has-icons-left">
+              <input class="input" type="password" name="password1" placeholder="Enter your password" required>
+              <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+              </span>
+              {% if form.password1.errors %}
+              <p class="help is-danger">{{ form.password1.errors }}</p>
+              {% endif %}
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Confirm Password</label>
+            <div class="control has-icons-left">
+              <input class="input" type="password" name="password2" placeholder="Confirm your password" required>
+              <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+              </span>
+              {% if form.password2.errors %}
+              <p class="help is-danger">{{ form.password2.errors }}</p>
+              {% endif %}
+            </div>
+          </div>
+          {% if form.non_field_errors %}
+          <div class="notification is-danger">
+            {{ form.non_field_errors }}
+          </div>
+          {% endif %}
+          <div class="field">
+            <div class="control">
+              <button class="button is-link is-fullwidth" type="submit">Register</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

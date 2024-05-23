@@ -7,7 +7,10 @@ import sys
 import csv
 import re
 
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.conf import settings
 
@@ -162,3 +165,19 @@ def submit(request):
 @login_required
 def restricted_view(request):
     return render(request, 'restricted.html')
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, "Please correct the error(s) below.")
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
