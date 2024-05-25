@@ -145,8 +145,8 @@ def submit(request):
 
         nom_image_requete, nom_images_non_proches, nom_images_proches = recherche(img, top, features1)
         file_path = os.path.join(settings.MEDIA_ROOT, 'temp_files/')
-        filename =  f"{model}_RP.txt"
-        graph_name = f"{model}_RP.png"
+        filename =  "VGG_RP.txt"
+        graph_name = "RP.png"
         file_ = file_path + filename
         graph_file = file_path + graph_name
         compute_RP(file_, top, nom_image_requete, nom_images_non_proches)
