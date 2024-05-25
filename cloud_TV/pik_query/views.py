@@ -87,7 +87,7 @@ def compute_RP(RP_file, top, nom_image_requete, nom_images_non_proches):
             f.write(str(a) + '\n')
 
 
-def display_RP(fichier, res_path):
+def display_RP(fichier, res_path, model):
     x = []
     y = []
     with open(fichier) as csvfile:
@@ -97,7 +97,7 @@ def display_RP(fichier, res_path):
             y.append(float(row[1]))
             fig = plt.figure()
 
-    plt.plot(y, x,'C1', label='VGG16')
+    plt.plot(y, x,'C1', label=model)
     plt.xlabel('Rappel')
     plt.ylabel('Précision')
     plt.title('Courbe Rappel-Précision')
@@ -117,6 +117,7 @@ def submit(request):
     if request.method == 'POST':
         img = int(request.POST.get("img"))
         top = int(request.POST.get("top"))
+        model = request.POST.get("model")
 
         # perform the search
         big_folder = "Features_train/"
@@ -125,7 +126,7 @@ def submit(request):
             print(f"{big_folder} do not exist, creating it")
             os.makedirs(big_folder)
 
-        folder_model1=f"{big_folder}VGG16/"
+        folder_model1=f"{big_folder}{model}/"
         if not os.path.exists(folder_model1):
             print(f"{folder_model1} do not exist, creating it")
             os.makedirs(folder_model1)
@@ -144,12 +145,12 @@ def submit(request):
 
         nom_image_requete, nom_images_non_proches, nom_images_proches = recherche(img, top, features1)
         file_path = os.path.join(settings.MEDIA_ROOT, 'temp_files/')
-        filename =  'VGG_RP.txt'
-        graph_name = 'RP.png'
+        filename =  f"{model}_RP.txt"
+        graph_name = f"{model}_RP.png"
         file_ = file_path + filename
         graph_file = file_path + graph_name
         compute_RP(file_, top, nom_image_requete, nom_images_non_proches)
-        display_RP(file_, graph_file)
+        display_RP(file_, graph_file, model)
 
         context = {
             "nom_img_request"     : nom_image_requete,
