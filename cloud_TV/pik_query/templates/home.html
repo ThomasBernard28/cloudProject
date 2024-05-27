@@ -35,27 +35,56 @@
       height: 2px;
       background-color: #ccc;
       margin: 3rem 0;
-      width: 100%
+      width: 100%;
+  }
+
+  .box.with-outline {
+      outline: 2px solid #ccc;
+      outline-offset: 0px; 
+      border-radius: 10px; 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+  }
+
+  .box-fixed {
+      height: 400px; /* Adjust as needed */
+  }
+
+  .image-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+  }
+
+  .image-display img {
+      max-height: 100%;
+      object-fit: contain;
   }
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="content-wrapper">
   <div class="container is-centered">
     <div class="columns">
       <div class="column is-half">
-        <div class="box">
+        <div class="box with-outline box-fixed">
           <form method="post" id="img-form" action="/home/search" onsubmit="return validateForm()">
             {% csrf_token %}
             <label class="label is-medium">Image</label>
             <div class="field has-addons">
               <p class="control">
-                <button class="button is-light is-danger" id="clear", type="button">
+                <button class="button is-light is-danger" id="clear" type="button">
                   X
                 </button>
               </p>
               <p class="control">
-                <input class="input" name="img" list="img-list" placeholder="Pick an image" id="image-input" autocomplete="off">
+                <input class="input" name="img" list="img-list" placeholder="Pick an image" id="image-input" autocomplete="off" required>
                 <datalist id="img-list">
                   {% for img in imgs %}
                   <option value="{{ img }}"></option>
@@ -84,54 +113,56 @@
                   <option>VGG16</option>
                   <option>RESNET50</option>
                 </select>
+              </div>
+            </div>
             <div class="field">
               <div class="control">
-                <button class="button is-link" onclick="">Submit</button>
+                <button class="button is-link" type="submit">Submit</button>
               </div>
             </div>
           </form>
         </div>
       </div>
-      <div class="column">
-        <div class="image-display">
-          <img id="image-preview" src="" alt="Selected Image" style="max-width: 100%; max-height: 300px; display: none;">
+      <div class="column is-half">
+        <div class="box with-outline box-fixed">
+          <div class="image-display">
+            <img id="image-preview" src="" alt="Selected Image" style="display: none;">
+          </div>
         </div>
       </div>
-      <script>
-        document.getElementById('clear').addEventListener('click', function() {
-            document.getElementById('image-input').value = '';
-            var imagePreview = document.getElementById('image-preview');
-            imagePreview.style.display = 'none';
-
-        });
-        document.getElementById('image-input').addEventListener('input', function() {
-            var imageName = this.value;
-            var imagePreview = document.getElementById('image-preview');
-            var regex = /^\d+\.jpg$/;
-            var imageNumber = Number(imageName);
-            if (regex.test(imageName + ".jpg") && imageNumber >= 0 && imageNumber <= 999) {
-                var imagePath = '/media/image_orig/' + imageName + ".jpg";
-                imagePreview.src = imagePath;
-                imagePreview.style.display = 'block';
-            } else {
-                imagePreview.style.display = 'none';
-            }
-        });
-
-        function validateForm() {
-            var imageInput = document.getElementById('image-input').value;
-            var imageNumber = Number(imageInput);
-            if (!isNaN(imageNumber) && imageNumber >= 0 && imageNumber <= 999) {
-                return true; // Allow form submission
-            } else {
-                alert('Please enter a valid image name in the format ID where ID is a number between 0 and 999.');
-                return false; // Prevent form submission
-            }
-        }
-
-      </script>
     </div>
-
   </div>
 </div>
+<script>
+  document.getElementById('clear').addEventListener('click', function() {
+      document.getElementById('image-input').value = '';
+      var imagePreview = document.getElementById('image-preview');
+      imagePreview.style.display = 'none';
+  });
+
+  document.getElementById('image-input').addEventListener('input', function() {
+      var imageName = this.value;
+      var imagePreview = document.getElementById('image-preview');
+      var regex = /^\d+$/;
+      var imageNumber = Number(imageName);
+      if (regex.test(imageName) && imageNumber >= 0 && imageNumber <= 999) {
+          var imagePath = '/media/image_orig/' + imageName + ".jpg";
+          imagePreview.src = imagePath;
+          imagePreview.style.display = 'block';
+      } else {
+          imagePreview.style.display = 'none';
+      }
+  });
+
+  function validateForm() {
+      var imageInput = document.getElementById('image-input').value;
+      var imageNumber = Number(imageInput);
+      if (!isNaN(imageNumber) && imageNumber >= 0 && imageNumber <= 999) {
+          return true; // Allow form submission
+      } else {
+          alert('Please enter a valid image name in the format ID where ID is a number between 0 and 999.');
+          return false; // Prevent form submission
+      }
+  }
+</script>
 {% endblock %}
