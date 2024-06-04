@@ -37,16 +37,15 @@ def bhatta(l1, l2):
 def getkVoisins(lfeatures, test, k, distance) :
     ldistances = []
     for i in range(len(lfeatures)):
-        match distance:
-            case "Euclidian":
-                dist = euclidianDistance(test[1], lfeatures[i][1])
-            case "Chi Square":
-                dist = chiSquareDistance(test[1], lfeatures[i][1])
-            case "Bhatta":
-                dist = bhatta(test[1], lfeatures[i][1])
-            case _:
-                dist = euclidianDistance(test[1], lfeatures[i][1])
-                
+        if distance == "Euclidian":
+            dist = euclidianDistance(test[1], lfeatures[i][1])
+        elif distance == "Chi Square":
+            dist = chiSquareDistance(test[1], lfeatures[i][1])
+        elif distance == "Bhatta":
+            dist = bhatta(test[1], lfeatures[i][1])
+        else:
+            dist = euclidianDistance(test[1], lfeatures[i][1])
+
         ldistances.append((lfeatures[i][0], lfeatures[i][1], dist))
     ldistances.sort(key=operator.itemgetter(2))
     lvoisins = []
