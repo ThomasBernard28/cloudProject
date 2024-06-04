@@ -23,10 +23,14 @@ def euclidianDistance(l1,l2):
     return math.sqrt(distance)
 
 def chiSquareDistance(l1,l2):
+    l1 = np.array(l1)
+    l2 = np.array(l2)
     n = min(len(l1), len(l2))
     return np.sum((l1[:n] - l2[:n])**2 / l2[:n])
 
 def bhatta(l1, l2):
+    l1 = np.array(l1)
+    l2 = np.array(l2)
     n = min(len(l1), len(l2))
     N_1, N_2 = np.sum(l1[:n])/n, np.sum(l2[:n])/n
     score = np.sum(np.sqrt(l1[:n] * l2[:n]))
