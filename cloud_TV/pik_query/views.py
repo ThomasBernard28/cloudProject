@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import operator
 import math
 import os
+import numpy as np
 import sys
 import csv
 import re
@@ -21,10 +22,31 @@ def euclidianDistance(l1,l2):
         distance += pow((int(l1[i]) - int(l2[i])), 2)
     return math.sqrt(distance)
 
-def getkVoisins(lfeatures, test, k) :
+def chiSquareDistance(l1,l2):
+    n = min(len(l1), len(l2))
+    return np.sum((l1[:n] - l2[:n])**2 / l2[:n])
+
+def bhatta(l1, l2):
+    n = min(len(l1), len(l2))
+    N_1, N_2 = np.sum(l1[:n])/n, np.sum(l2[:n])/n
+    score = np.sum(np.sqrt(l1[:n] * l2[:n]))
+    num = round(score, 2)
+    den = round(math.sqrt(N_1*N_2*n*n), 2)
+    return math.sqrt( 1 - num / den )
+
+def getkVoisins(lfeatures, test, k, distance) :
     ldistances = []
     for i in range(len(lfeatures)):
-        dist = euclidianDistance(test[1], lfeatures[i][1])
+        match distance:
+            case "Euclidian":
+                dist = euclidianDistance(test[1], lfeatures[i][1])
+            case "Chi Square":
+                dist = chiSquareDistance(test[1], lfeatures[i][1])
+            case "Bhatta":
+                dist = bhatta(test[1], lfeatures[i][1])
+            case _:
+                dist = euclidianDistance(test[1], lfeatures[i][1])
+                
         ldistances.append((lfeatures[i][0], lfeatures[i][1], dist))
     ldistances.sort(key=operator.itemgetter(2))
     lvoisins = []
@@ -32,8 +54,8 @@ def getkVoisins(lfeatures, test, k) :
         lvoisins.append(ldistances[i])
     return lvoisins
 
-def recherche(image_req,top, features1):
-    voisins = getkVoisins(features1, features1[image_req],top)
+def recherche(image_req,top, features1, distance):
+    voisins = getkVoisins(features1, features1[image_req],top, distance)
     #print(voisins)
     nom_images_proches = []
     nom_images_non_proches = []
@@ -118,6 +140,7 @@ def submit(request):
         img = int(request.POST.get("img"))
         top = int(request.POST.get("top"))
         model = request.POST.get("model")
+        distance = request.POST.get("distance")
 
         # perform the search
         big_folder = "Features_train/"
@@ -143,7 +166,7 @@ def submit(request):
         except Exception as e:
             print(f"Error reading file: {e}")
 
-        nom_image_requete, nom_images_non_proches, nom_images_proches = recherche(img, top, features1)
+        nom_image_requete, nom_images_non_proches, nom_images_proches = recherche(img, top, features1, distance)
         file_path = os.path.join(settings.MEDIA_ROOT, 'temp_files/')
         filename =  "VGG_RP.txt"
         graph_name = "RP.png"
